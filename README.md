@@ -1,4 +1,4 @@
-#Fitting with sigma clipping
+#FITTING WITH SIGMA CLIPPING
 Sometimes when fitting a function to data you just want to do a simple and fast rejection of outliers. This module allows you to use your favourite fitting procedure with the addition of an iterative sigma clipping or min/max rejection step.
 
 ##Download
