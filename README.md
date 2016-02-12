@@ -23,6 +23,8 @@ This will make the `sclip` module available system-wide.
 
 ##Usage
 
+See `examples.py` or keep reading.
+
 ###Define a fitting function
 
 You can use any function for fitting data you want. Just write a small wraper around it, so the input and output will be managable by sclip. Example:
@@ -40,5 +42,8 @@ The input parameters are:
 The output is only one array of the fitted function values at coordinates `x`.
 
 ###Run the clipping iterations
+
+###Get fitted parameters
+`sclip` returns the final mask, so you can run your fitting function on the optimal subsample. Get whatever you need from the fiting function this time. 
 
 
