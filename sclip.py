@@ -1,8 +1,8 @@
 import numpy as np
 
-def sclip(x,y,fit,n,ye=[],sl=99999,su=99999,min=0,max=0,min_data=1,grow=0,verbose=True):
+def sclip(p,fit,n,ye=[],sl=99999,su=99999,min=0,max=0,min_data=1,grow=0,verbose=True):
 	"""
-	x,y: two arrays with coordinates of data points
+	p: array of coordinate vectors. Last line in the array must be values that are fitted. The rest are coordinates.
 	fit: name of the fitting function. It must have arguments x,y,ye,and mask and return an array of values of the fitted function at coordinates x
 	n: number of iterations
 	ye: array of errors for each point
@@ -14,20 +14,23 @@ def sclip(x,y,fit,n,ye=[],sl=99999,su=99999,min=0,max=0,min_data=1,grow=0,verbos
 	grow: number of points to reject around the rejected point.
 	verbose: print the results or not
 	"""
-	#if error vector is not given, assume errors are equal to 0:
-	if ye==[]: ye=np.zeros(len(x))
-	#if a single number is given for y errors, assume it means the same error is for all points:
-	if isinstance(ye, (int, long, float)): ye=np.ones(len(x))*ye
 
-	f_initial=fit(x,y,ye,np.ones(len(x), dtype=bool))
-	s_initial=np.std(y-f_initial)
+	nv,dim=np.shape(p)
+
+	#if error vector is not given, assume errors are equal to 0:
+	if ye==[]: ye=np.zeros(dim)
+	#if a single number is given for y errors, assume it means the same error is for all points:
+	if isinstance(ye, (int, long, float)): ye=np.ones(dim)*ye
+
+	f_initial=fit(p,ye,np.ones(dim, dtype=bool))
+	s_initial=np.std(p[-1]-f_initial)
 
 	f=f_initial
 	s=s_initial
 
 	tmp_results=[]
 
-	b_old=np.ones(len(x), dtype=bool)
+	b_old=np.ones(dim, dtype=bool)
 
 	for step in range(n):
 		#check that only sigmas or only min/max are given:
@@ -36,25 +39,25 @@ def sclip(x,y,fit,n,ye=[],sl=99999,su=99999,min=0,max=0,min_data=1,grow=0,verbos
 
 		#if sigmas are given:
 		if sl!=99999 or su!=99999:
-			b=np.zeros(len(x), dtype=bool)
+			b=np.zeros(dim, dtype=bool)
 			if sl>=99999 and su!=sl: sl=su#check if only one is given. In this case set the other to the same value
 			if su>=99999 and sl!=su: su=sl
 
-			good_values=np.where(((f-y)<(sl*(s+ye))) & ((f-y)>-(su*(s+ye))))#find points that pass the sigma test
+			good_values=np.where(((f-p[-1])<(sl*(s+ye))) & ((f-p[-1])>-(su*(s+ye))))#find points that pass the sigma test
 			b[good_values]=True
 
 		#if min/max are given
 		if min!=0 or max!=0:
-			b=np.ones(len(x), dtype=bool)
-			if min<1: min=len(x)*min#detect if min is in number of points or percentage
-			if max<1: max=len(x)*max#detect if max is in number of points or percentage
+			b=np.ones(dim, dtype=bool)
+			if min<1: min=dim*min#detect if min is in number of points or percentage
+			if max<1: max=dim*max#detect if max is in number of points or percentage
 
-			bad_values=np.concatenate(((y-f).argsort()[-int(max):], (y-f).argsort()[:int(min)]))
+			bad_values=np.concatenate(((p[-1]-f).argsort()[-int(max):], (p[-1]-f).argsort()[:int(min)]))
 			b[bad_values]=False
 
 		#check the grow parameter:
-		if grow>=1:
-			b_grown=np.ones(len(x), dtype=bool)
+		if grow>=1 and nv==2:
+			b_grown=np.ones(dim, dtype=bool)
 			for ind,val in enumerate(b):
 				if val==False:
 					ind_l=ind-int(grow)
@@ -78,8 +81,8 @@ def sclip(x,y,fit,n,ye=[],sl=99999,su=99999,min=0,max=0,min_data=1,grow=0,verbos
 			break
 
 		#fit again
-		f=fit(x,y,ye,b)
-		s=np.std(y[b]-f[b])
+		f=fit(p,ye,b)
+		s=np.std(p[-1][b]-f[b])
 		b_old=b
 
 	if verbose:
