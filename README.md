@@ -52,22 +52,22 @@ fitted,int_steps,mask=sclip.sclip(p,fit,5,ye,sl=2)
 
 The mandatory input parameters are:
 * `p` is the array of points. It must be at least two dimensional, where each row contains coordinates in one dimension.
-* `fit` is the name of the fitting function
-* `n` is the number of iterations. The number of performed iterations can be smaller, if convergence is reached or if minimum numbe rof acceptable points is reached
+* `fit` is the name of the fitting function.
+* `n` is the number of iterations. The number of performed iterations can be smaller, if convergence is reached or if minimum number of acceptable points is reached.
 
 Other parameters are:
-* `ye` array with errors for the last line in the `p` array
-* `sl` lower rejection limit in sigma units
+* `ye` array with errors for the last line in the `p` array.
+* `sl` lower rejection limit in sigma units.
 * `su` upper rejection limit in sigma units. If only one of the `sl` or `su` is given, the other one will be assumed to be the same.
 * `min` is the number or fraction of rejected points below the fitted curve. A value less than 1 means fraction, 1 or more means number of points. Points furthest away from the curve will be rejected regardles their errors.
 * `max` is the number or fraction of rejected points above the fitted curve. A value less than 1 means fraction, 1 or more means number of points. Points furthest away from the curve will be rejected regardles their errors. If only one of the `min` or `max` is given, the other one will be assumed to be the same.
 * `min_data` is the minimal number of points that can remain unrejected. It is up to the user to provide the right value, as it depends on the fitted function.
-* `grow` is the number of nearby points to reject. If set to 1, for example, first point to the left and to the right of the rejected point will be rejected as well. 
-* `verbose` can be st to True or False. If True, a short summary will be printed after the last iteration
+* `grow` is the number of nearby points to reject. If set to 1, for example, first point to the left and to the right of the rejected point will be rejected as well. This option can only be used for 2 dimensional data for now.
+* `verbose` can be set to True or False. If True, a short summary will be printed after the last iteration.
 * 
 Returned parameters are:
-* Final values of the fitted function at coordinates given in `p`
-* An array of values of the fitted function at coordinates given in `p` after each iteration
+* Final values of the fitted function at coordinates given in `p`.
+* An array of values of the fitted function at coordinates given in `p` after each iteration.
 * The final mask. Accepted points have value True.
 
 ###Get fitted parameters
