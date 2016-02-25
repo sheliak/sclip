@@ -1,6 +1,6 @@
 import numpy as np
 
-def sclip(p,fit,n,ye=[],sl=99999,su=99999,min=0,max=0,min_data=1,grow=0,initial_mask=None,verbose=True):
+def sclip(p,fit,n,ye=[],sl=99999,su=99999,min=0,max=0,min_data=1,grow=0,global_mask=None,verbose=True):
 	"""
 	p: array of coordinate vectors. Last line in the array must be values that are fitted. The rest are coordinates.
 	fit: name of the fitting function. It must have arguments x,y,ye,and mask and return an array of values of the fitted function at coordinates x
@@ -11,7 +11,7 @@ def sclip(p,fit,n,ye=[],sl=99999,su=99999,min=0,max=0,min_data=1,grow=0,initial_
 	min: number or fraction of rejected points below the fitted curve
 	max: number or fraction of rejected points above the fitted curve
 	min_data: minimal number of points that can still be used to make a constrained fit
-	initial_mask: if initial mask is given it will be used throughout the whole fitting process, but the final fit will be evaluated also in the masked points
+	global_mask: if initial mask is given it will be used throughout the whole fitting process, but the final fit will be evaluated also in the masked points
 	grow: number of points to reject around the rejected point.
 	verbose: print the results or not
 	"""
@@ -23,10 +23,10 @@ def sclip(p,fit,n,ye=[],sl=99999,su=99999,min=0,max=0,min_data=1,grow=0,initial_
 	#if a single number is given for y errors, assume it means the same error is for all points:
 	if isinstance(ye, (int, long, float)): ye=np.ones(dim)*ye
 	
-	if initial_mask==None: initial_mask=np.ones(dim, dtype=bool)
+	if global_mask==None: global_mask=np.ones(dim, dtype=bool)
 	else: pass
 	
-	f_initial=fit(p,ye,initial_mask)
+	f_initial=fit(p,ye,global_mask)
 	s_initial=np.std(p[-1]-f_initial)
 
 	f=f_initial
@@ -85,7 +85,7 @@ def sclip(p,fit,n,ye=[],sl=99999,su=99999,min=0,max=0,min_data=1,grow=0,initial_
 			break
 
 		#fit again
-		f=fit(p,ye,b&initial_mask)
+		f=fit(p,ye,b&global_mask)
 		s=np.std(p[-1][b]-f[b])
 		b_old=b
 
