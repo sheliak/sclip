@@ -65,7 +65,7 @@ Other parameters are:
 * `global_mask` is a bool array of the same dimension as the input data. False values in the mask mark the points that should never be used in the fitting, but the final fit will be evaluated in them.
 * `grow` is the number of nearby points to reject. If set to 1, for example, first point to the left and to the right of the rejected point will be rejected as well. This option can only be used for 2 dimensional data for now.
 * `verbose` can be set to True or False. If True, a short summary will be printed after the last iteration.
-* 
+
 Returned parameters are:
 * Final values of the fitted function at coordinates given in `p`.
 * An array of values of the fitted function at coordinates given in `p` after each iteration.
