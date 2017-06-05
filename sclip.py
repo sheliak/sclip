@@ -74,7 +74,7 @@ def sclip(p,fit,n,ye=[],sl=99999,su=99999,min=0,max=0,min_data=1,grow=0,global_m
 		tmp_results.append(f)
 
 		#check that the minimal number of good points is not too low:
-		if len(b[b])<min:
+		if len(b[b])<min_data:
 			step=step-1
 			b=b_old
 			break
